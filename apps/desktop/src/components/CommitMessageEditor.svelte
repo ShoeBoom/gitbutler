@@ -8,7 +8,7 @@
 	import AIMacros from "$lib/ai/macros.svelte";
 	import { PROMPT_SERVICE } from "$lib/ai/promptService";
 	import { AI_SERVICE } from "$lib/ai/service";
-	import { projectAiGenEnabled } from "$lib/config/config";
+	import { projectAiGenEnabled, projectCommitGenerationAutoCommit } from "$lib/config/config";
 	import { DIFF_SERVICE } from "$lib/hunks/diffService.svelte";
 	import { UNCOMMITTED_SERVICE } from "$lib/selection/uncommittedService.svelte";
 	import { STACK_SERVICE } from "$lib/stacks/stackService.svelte";
@@ -84,6 +84,7 @@
 
 	// AI things
 	const aiGenEnabled = $derived(projectAiGenEnabled(projectId));
+	const commitGenerationAutoCommit = $derived(projectCommitGenerationAutoCommit(projectId));
 	let aiIsLoading = $state(false);
 	const canUseAI = $derived(aiMacros.canUseAI);
 
@@ -136,6 +137,10 @@
 				generatedText = output;
 				const newMessage = splitMessage(generatedText);
 				onChange?.({ title: newMessage.title, description: newMessage.description });
+
+				if ($commitGenerationAutoCommit) {
+					await emitAction();
+				}
 			}
 		} finally {
 			aiIsLoading = false;

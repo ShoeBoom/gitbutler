@@ -13,6 +13,7 @@
 		projectCommitGenerationExtraConcise,
 		projectCommitGenerationHaiku,
 		projectCommitGenerationUseEmojis,
+		projectCommitGenerationAutoCommit,
 	} from "$lib/config/config";
 	import { showError } from "$lib/notifications/toasts";
 	import { SETTINGS } from "$lib/settings/userSettings";
@@ -95,6 +96,7 @@
 	const commitGenerationExtraConcise = projectCommitGenerationExtraConcise(projectId);
 	const commitGenerationUseEmojis = projectCommitGenerationUseEmojis(projectId);
 	const commitGenerationHaiku = projectCommitGenerationHaiku(projectId);
+	const commitGenerationAutoCommit = projectCommitGenerationAutoCommit(projectId);
 
 	const useFloatingBox = uiState.global.useFloatingBox;
 
@@ -459,6 +461,15 @@
 						>
 							{#snippet control()}
 								<Checkbox small bind:checked={$commitGenerationUseEmojis} />
+							{/snippet}
+						</ContextMenuItem>
+
+						<ContextMenuItem
+							label="Commit after generating"
+							onclick={() => ($commitGenerationAutoCommit = !$commitGenerationAutoCommit)}
+						>
+							{#snippet control()}
+								<Checkbox small bind:checked={$commitGenerationAutoCommit} />
 							{/snippet}
 						</ContextMenuItem>
 					</ContextMenuSection>
