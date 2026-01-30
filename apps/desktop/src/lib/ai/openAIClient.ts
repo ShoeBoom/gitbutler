@@ -1,10 +1,10 @@
 import {
 	SHORT_DEFAULT_BRANCH_TEMPLATE,
 	SHORT_DEFAULT_COMMIT_TEMPLATE,
-	SHORT_DEFAULT_PR_TEMPLATE,
-} from "$lib/ai/prompts";
-import OpenAI from "openai";
-import type { OpenAIModelName, Prompt, AIClient, AIEvalOptions } from "$lib/ai/types";
+	SHORT_DEFAULT_PR_TEMPLATE
+} from '$lib/ai/prompts';
+import OpenAI from 'openai';
+import type { Prompt, AIClient, AIEvalOptions } from '$lib/ai/types';
 
 const DEFAULT_MAX_TOKENS = 1024;
 
@@ -15,9 +15,9 @@ export class OpenAIClient implements AIClient {
 
 	private client: OpenAI;
 	private openAIKey: string;
-	private modelName: OpenAIModelName;
+	private modelName: string;
 
-	constructor(openAIKey: string, modelName: OpenAIModelName, baseURL: string | undefined) {
+	constructor(openAIKey: string, modelName: string, baseURL: string | undefined) {
 		this.openAIKey = openAIKey;
 		this.modelName = modelName;
 		this.client = new OpenAI({ apiKey: openAIKey, dangerouslyAllowBrowser: true, baseURL });

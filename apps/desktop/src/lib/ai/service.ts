@@ -154,7 +154,7 @@ export class AIService {
 	}
 
 	async getOpenAIModleName() {
-		return await this.gitConfig.getWithDefault<OpenAIModelName>(
+		return await this.gitConfig.getWithDefault<string>(
 			GitAIConfigKey.OpenAIModelName,
 			OpenAIModelName.GPT4oMini,
 		);

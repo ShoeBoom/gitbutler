@@ -36,7 +36,8 @@
 	let anthropicKeyOption: KeyOption | undefined = $state();
 	let openAIKey: string | undefined = $state();
 	let openAICustomEndpoint: string | undefined = $state();
-	let openAIModelName: OpenAIModelName | undefined = $state();
+	let openAIModelName: string | undefined = $state();
+	let openAIModelMode: 'preset' | 'custom' = $state('preset');
 	let anthropicKey: string | undefined = $state();
 	let anthropicModelName: AnthropicModelName | undefined = $state();
 	let diffLengthLimit: number | undefined = $state();
@@ -74,6 +75,10 @@
 
 		lmStudioEndpoint = await aiService.getLMStudioEndpoint();
 		lmStudioModel = await aiService.getLMStudioModelName();
+
+		openAIModelMode = openAIModelOptions.some((option) => option.value === openAIModelName)
+			? 'preset'
+			: 'custom';
 
 		// Ensure reactive declarations have finished running before we set initialized to true
 		await tick();
@@ -253,21 +258,48 @@
 						placeholder="sk-..."
 					/>
 
-					<Select
-						value={openAIModelName}
-						options={openAIModelOptions}
-						label="Model version"
-						wide
-						onselect={(value) => {
-							openAIModelName = value as OpenAIModelName;
-						}}
-					>
-						{#snippet itemSnippet({ item, highlighted })}
-							<SelectItem selected={item.value === openAIModelName} {highlighted}>
-								{item.label}
-							</SelectItem>
-						{/snippet}
-					</Select>
+					{#if openAIModelMode === 'preset'}
+						<Select
+							value={openAIModelName}
+							options={openAIModelOptions}
+							label="Model version"
+							wide
+							onselect={(value) => {
+								openAIModelName = value;
+							}}
+						>
+							{#snippet itemSnippet({ item, highlighted })}
+								<SelectItem selected={item.value === openAIModelName} {highlighted}>
+									{item.label}
+								</SelectItem>
+							{/snippet}
+						</Select>
+						<button
+							type="button"
+							class="text-12 underline-dotted clr-text-2 link-hover-2"
+							onclick={() => {
+								openAIModelMode = 'custom';
+							}}
+						>
+							Use custom model name
+						</button>
+					{:else}
+						<Textbox label="Model name" bind:value={openAIModelName} placeholder="gpt-4o-mini" />
+						<button
+							type="button"
+							class="text-12 underline-dotted clr-text-2 link-hover-2"
+							onclick={() => {
+								openAIModelMode = 'preset';
+								openAIModelName = openAIModelOptions.some(
+									(option) => option.value === openAIModelName
+								)
+									? openAIModelName
+									: OpenAIModelName.GPT4oMini;
+							}}
+						>
+							Use preset list
+						</button>
+					{/if}
 
 					<Textbox
 						label="Custom endpoint"
